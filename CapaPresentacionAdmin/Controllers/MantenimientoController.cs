@@ -26,6 +26,8 @@ namespace CapaPresentacionAdmin.Controllers
             return View();
         }
 
+        #region CATEGORIA SECTION
+
         [HttpGet]
         public JsonResult ListarCategorias()
         {
@@ -62,6 +64,9 @@ namespace CapaPresentacionAdmin.Controllers
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+        #region MARCA SECTION
         [HttpGet]
         public JsonResult ListarMarcas()
         {
@@ -97,5 +102,7 @@ namespace CapaPresentacionAdmin.Controllers
             respuesta = new CN_Marca().EliminarMarca(idMarca, out mensaje);
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+
+        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace CapaDATOS
             {
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
-                    string query = "SELECT idCategoria, Descripcion, Activa FROM CATEGORIA";
+                    string query = "SELECT idCategoria, Descripcion, Activa FROM CATEGORIA ORDER BY Descripcion ASC";
 
                     SqlCommand cmd = new SqlCommand(query, oConexion);
 

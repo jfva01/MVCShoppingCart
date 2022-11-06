@@ -19,7 +19,7 @@ namespace CapaDATOS
             {
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
-                    string query = "SELECT idMarca, Descripcion, Activa FROM MARCA";
+                    string query = "SELECT idMarca, Descripcion, Activa FROM MARCA ORDER BY Descripcion ASC";
 
                     SqlCommand cmd = new SqlCommand(query, oConexion);
 
@@ -53,7 +53,7 @@ namespace CapaDATOS
             return lista;
         }
 
-        public int GuardarMarca(Categoria obj, out string Mensaje)
+        public int GuardarMarca(Marca obj, out string Mensaje)
         {
             int idAutogenerado = 0;
             Mensaje = string.Empty;
@@ -95,7 +95,7 @@ namespace CapaDATOS
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_EditarMarca", oConexion);
-                    cmd.Parameters.AddWithValue("IdMarca", obj.idCategoria);
+                    cmd.Parameters.AddWithValue("IdMarca", obj.idMarca);
                     cmd.Parameters.AddWithValue("Descripcion", obj.Descripcion);
                     cmd.Parameters.AddWithValue("Activa", obj.Activa);
                     cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
