@@ -48,6 +48,7 @@
     <Compile Include="Ciudad.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Estado.cs" />
+    <Compile Include="Imagenes.cs" />
     <Compile Include="Marca.cs" />
     <Compile Include="Producto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
