@@ -12,7 +12,7 @@ namespace CapaDATOS
 {
     public class CD_Producto
     {
-        public List<Producto> ListarProducto()
+        public List<Producto> ListarProductos()
         {
             List<Producto> lista = new List<Producto>();
 
@@ -104,6 +104,45 @@ namespace CapaDATOS
             return idAutogenerado;
         }
 
+        public bool GuardarDatosImagen(Producto obj, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
+                {
+                    string sqlSTR = "UPDATE producto SET rutaImagen = @rutaImagen, nombreImagen = @nombreImagen WHERE idProducto = @idProducto";
+
+                    SqlCommand cmd = new SqlCommand(sqlSTR, oConexion);
+                    cmd.Parameters.AddWithValue("@rutaImagen", obj.rutaImagen);
+                    cmd.Parameters.AddWithValue("@nombreImagen", obj.nombreImagen);
+                    cmd.Parameters.AddWithValue("@idProduct", obj.idProducto);
+                    cmd.CommandType = CommandType.Text;
+
+                    oConexion.Open();
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        resultado = true;
+                    }
+                    else
+                    {
+                        Mensaje = "No se pudo actualizar la imagen";
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
+        }
+
         public bool EditarProducto(Producto obj, out string Mensaje)
         {
             bool resultado = false;
@@ -114,6 +153,7 @@ namespace CapaDATOS
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_EditarProducto", oConexion);
+                    cmd.Parameters.AddWithValue("idProducto", obj.Nombre);
                     cmd.Parameters.AddWithValue("Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("Descripcion", obj.Descripcion);
                     cmd.Parameters.AddWithValue("idMarca", obj.oMarca.idMarca);
@@ -153,7 +193,7 @@ namespace CapaDATOS
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_EliminarProducto", oConexion);
-                    cmd.Parameters.AddWithValue("IdProducto", idProducto);
+                    cmd.Parameters.AddWithValue("idProducto", idProducto);
                     cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -173,6 +213,7 @@ namespace CapaDATOS
             }
             return resultado;
         }
+                
     }
 }
 

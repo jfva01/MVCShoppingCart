@@ -35,7 +35,8 @@ namespace CapaPresentacionAdmin
                         "~/Content/DataTables/css/jquery.dataTables.css",
                         "~/Content/DataTables/css/dataTables.bootstrap5.min.css",
                         "~/Content/DataTables/css/responsive.dataTables.css",
-                        "~/Content/sweetalert.css"
+                        "~/Content/sweetalert.css",
+                        "~/Content/all.min.css"
                 ));
         }
     }

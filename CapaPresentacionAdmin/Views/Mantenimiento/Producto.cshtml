@@ -4,5 +4,262 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Producto</h2>
+<ol class="breadcrumb mt-4 mb-4">
+    <li class="breadcrumb-item"><a href="index.html">Mantenimiento</a></li>
+    <li class="breadcrumb-item active">Productos</li>
+</ol>
 
+<div class="card">
+    <div class="card-header"><h3><i class="fa fa-box-open"></i> Lista de prouctos</h3></div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-dark" onclick="openModal(null)">Nuevo</button>
+            </div>
+        </div>
+
+        <hr />
+
+        <table id="tblDatosMarca" class="display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Marca</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Activo</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<!-- Propiedad para que el modal no se cierre al hacer clic fuera de él: data-bs-backdrop="static" -->
+<div class="modal fade" id="frmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Marca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input id="txtId" type="text" value="0" hidden />
+
+                <form action="/" method="post">
+                    <div class="col-sm-3">
+                        <div class="mb-2">
+                            <img id="imgProducto" width="200" height="197" class="img-thumbnail mx-auto d-block img-fluid" />
+                        </div>
+                        <div class="mb-2">
+                            <input id="fileProducto" class="form-control" type="file" accept="image/png, image/jpg, image/jpeg" onchange="" />
+                        </div>
+                    </div>
+                </form>
+
+
+
+
+
+                <div class="row g-2">
+                    <div class="col-mb-12">
+                        <label for="txtDescripcion" class="form-label">Descripción</label>
+                        <input type="text" class="form-control" id="txtDescripcion" placeholder="Descripción" autocomplete="off">
+                    </div>
+                    <div class="col-sm-6 col-mb-6">
+                        <label for="cboActivo" class="form-label">Estado</label>
+                        <select id="cboActivo" class="form-select">
+                            <option selected>Selecciona una opción</option>
+                            <option value="1">Activa</option>
+                            <option value="0">Inactiva</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Mensaje de alerta -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div id="mensajeError" class="alert alert-danger" role="alert">
+                            A simple danger alert—check it out!
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cmdCancelar" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button id="cmdGuardar" type="button" class="btn btn-dark" onclick="Guardar()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #F2F2F2
+    }
+</style>
+
+@section scripts{
+    <script type="text/javascript">
+        let dataTable;
+        let selectedRow;
+        let selectedBrand;
+
+        dataTable = $("#tblDatosMarca").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: '@Url.Action("ListarMarcas", "Mantenimiento")',
+                type: "GET",
+                dataType: "json",
+            },
+            "columns": [
+                { "data": "Descripcion" },
+                {
+                    "data": "Activa", "render": function (valor) {
+                        if (valor) {
+                            return '<input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>'
+                        } else {
+                            return '<input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled>'
+                        }
+                    }
+                },
+                {
+                    "defaultContent": '<button type="button" class="btn btn-sm btn-dark btn-editar" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar"><i class="fas fa-pen"></i></button>' +
+                        '<button type="button" class="btn btn-sm btn-danger ms-2 btn-eliminar" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Eliminar"><i class="fas fa-trash"></i></button>',
+                    "orderable": false,
+                    "searchable": false,
+                    "width": "90px"
+                }
+            ],
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json"
+            }
+        });
+
+        function limpiarModal() {
+            $("#txtId").val(0);
+            $("#txtDescripcion").val("");
+            $("#cboActivo").prop("selectedIndex", 0).val(); //Muestra el valor del primer elemento del select.
+        }
+
+        function openModal(json) {
+            limpiarModal();
+
+            $("#mensajeError").hide();
+
+            if (json != null) {
+                //Si la variable json tiene datos, los asigna a cada input.
+                $("#txtId").val(json.idCategoria);
+                $("#txtDescripcion").val(json.Descripcion);
+                $("#cboActivo").val(json.Activa == true ? 1 : 0); //Boolean: Si el dato recibido es true le asigna el valor 1, de lo contrario le asigna 0.
+            }
+
+            $("#frmModal").modal("show");
+        }
+
+        $("#tblDatosMarca tbody").on("click", '.btn-editar', function () {
+            //Obtener la fila seleccionada
+            selectedRow = $(this).closest("tr");
+            //Obtener datos de la fila seleccionada
+            let data = dataTable.row(selectedRow).data();
+            //Abrir modal
+            openModal(data);
+        })
+
+        $("#tblDatosMarca tbody").on("click", '.btn-eliminar', function () {
+            //Obtener la fila seleccionada
+            selectedBrand = $(this).closest("tr");
+            //Obtener datos de la fila seleccionada
+            let data = dataTable.row(selectedBrand).data();
+            swal({
+                title: "Eliminar",
+                text: "Seguro desea eliminar este registro?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-dark",
+                cancelButtonClass: "btn-danger",
+                confirmButtonText: "Aceptar",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: true
+            },
+                function () {
+                jQuery.ajax({
+                    url: '@Url.Action("EliminarMarca", "Mantenimiento")',
+                    type: "POST",
+                    data: JSON.stringify({ idMarca: data.idMarca }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data.resultado) {
+                            dataTable.row(selectedBrand).remove().draw();
+                            swal("Registro eliminado correctamente", data.mensaje, "Confirmación")
+                        } else {
+                            swal("No se pudo eliminar el registro", data.mensaje, "Error")
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                });
+            });
+        })
+
+        function Guardar() {
+            let marca = {
+                idMarca: $("#txtId").val(),
+                Descripcion: $("#txtDescripcion").val(),
+                Activa: $("#cboActivo").val() == 1 ? true : false
+            }
+
+            jQuery.ajax({
+                url: '@Url.Action("GuardarMarca", "Mantenimiento")',
+                type: "POST",
+                data: JSON.stringify({ obj: marca }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $(".modal-body").LoadingOverlay("hide");
+
+                    if (marca.idMarca == 0) {
+                        // Crear marca
+                        if (data.resultado != 0) {
+                            marca.idMarca = data.resultado;
+                            dataTable.row.add(marca).draw(false);
+                            $("#frmModal").modal("hide");
+                        } else {
+                            $("#mensajeError").text(data.mensaje);
+                            $("#mensajeError").show();
+                        }
+                    } else {
+                        // Editar marca
+                        if (data.resultado) {
+                            dataTable.row(selectedRow).data(marca).draw(false);
+                            selectedRow = null;
+                            $("#frmModal").modal("hide");
+                        } else {
+                            $("#mensajeError").text(data.mensaje);
+                            $("#mensajeError").show();
+                        }
+                    }
+                },
+                error: function (error) {
+                    $(".modal-body").LoadingOverlay("hide");
+                    $("#mensajeError").text("Error ajax");
+                    $("#mensajeError").show();
+                },
+                beforeSend: function () {
+                    $(".modal-body").LoadingOverlay("show", {
+                        imageResizeFactor: 2,
+                        text: "Cargando...",
+                        size: 14
+                    })
+                }
+            });
+        }
+    </script>
+}
