@@ -5,7 +5,7 @@
 }
 
 <ol class="breadcrumb mt-4 mb-4">
-    <li class="breadcrumb-item"><a href="index.html">Mantenimiento</a></li>
+    <li class="breadcrumb-item"><a href="#">Mantenimiento</a></li>
     <li class="breadcrumb-item active">Productos</li>
 </ol>
 
@@ -45,41 +45,63 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Marca</h5>
+                <h5 class="modal-title" id="modalTitle">Producto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <input id="txtId" type="text" value="0" hidden />
 
-                <form action="/" method="post">
+                <form class="row" id="contenedor">
                     <div class="col-sm-3">
                         <div class="mb-2">
                             <img id="imgProducto" width="200" height="197" class="img-thumbnail mx-auto d-block img-fluid" />
                         </div>
                         <div class="mb-2">
-                            <input id="fileProducto" class="form-control" type="file" accept="image/png, image/jpg, image/jpeg" onchange="" />
+                            <input id="fileProducto" class="form-control" type="file" accept="image/png, image/jpg, image/jpeg" onchange="mostrarImagen(this)" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="txtNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="txtNombre" name="nombre" value="" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtDescripcion" class="form-label">Descripción</label>
+                            <textarea type="text" class="form-control" id="txtDescripcion" name="descripcion" value="" style="height:125px;resize:none"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="cboMarca" class="form-label">Marca</label>
+                            <select id="cboMarca" class="form-select">
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cboCategoria" class="form-label">Categoría</label>
+                            <select id="cboCategoria" class="form-select">
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtPrecio" class="form-label">Precio</label>
+                            <input type="text" class="form-control" id="txtPrecio" name="precio" value="" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="mb-3">
+                            <label for="txtStock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="txtStock" name="stock" value="" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="cboActivo" class="form-label">Estado</label>
+                            <select id="cboActivo" class="form-select">
+                                <option selected>Seleccionar</option>
+                                <option value="1">Activo</option>
+                                <option value="0">Inactivo</option>
+                            </select>
                         </div>
                     </div>
                 </form>
 
-
-
-
-
-                <div class="row g-2">
-                    <div class="col-mb-12">
-                        <label for="txtDescripcion" class="form-label">Descripción</label>
-                        <input type="text" class="form-control" id="txtDescripcion" placeholder="Descripción" autocomplete="off">
-                    </div>
-                    <div class="col-sm-6 col-mb-6">
-                        <label for="cboActivo" class="form-label">Estado</label>
-                        <select id="cboActivo" class="form-select">
-                            <option selected>Selecciona una opción</option>
-                            <option value="1">Activa</option>
-                            <option value="0">Inactiva</option>
-                        </select>
-                    </div>
-                </div>
                 <!-- Mensaje de alerta -->
                 <div class="row mt-4">
                     <div class="col-12">
@@ -108,6 +130,18 @@
         let dataTable;
         let selectedRow;
         let selectedBrand;
+
+        function mostrarImagen(input) {
+            if (input.files) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#imgProducto").attr("src", e.target.result).width(200).height(197);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         dataTable = $("#tblDatosMarca").DataTable({
             responsive: true,
@@ -140,10 +174,57 @@
                 "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json"
             }
         });
+        //LLENAR SELECT MARCAS
+        jQuery.ajax({
+            url: '@Url.Action("ListarMarcas","Mantenimiento")',
+            type: "GET",
+            data: null,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("<option>").attr({ "value": "0","selected":"true","disabled":"true" }).text("Seleccionar").appendTo("#cboMarca");
+
+                $.each(data.data, function (index, item) {
+                    $("<option>").attr({ "value": item.idMarca }).text(item.Descripcion).appendTo("#cboMarca")
+                })
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+        // LLENAR SELECT CATEGORIAS
+        jQuery.ajax({
+            url: '@Url.Action("ListarCategorias", "Mantenimiento")',
+            type: "GET",
+            data: null,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("<option>").attr({ "value": "0","selected":"true","disabled":"true" }).text("Seleccionar").appendTo("#cboCategoria");
+
+                $.each(data.data, function (index, item) {
+                    $("<option>").attr({ "value": item.idCategoria }).text(item.Descripcion).appendTo("#cboCategoria")
+                })
+
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+
 
         function limpiarModal() {
-            $("#txtId").val(0);
+            $("#imgProducto").removeAttr("src");
+            $("#fileProducto").val("");
+            $("#txtNombre").val("");
             $("#txtDescripcion").val("");
+            $("#cboMarca").val($("#cboMarca option:first").val()); //Muestra el valor del primer elemento del select.
+            $("#cboCategoria").val($("#cboCategoria option:first").val()); //Muestra el valor del primer elemento del select.
+            $("#txtPrecio").val("");
+            $("#txtStock").val("");
             $("#cboActivo").prop("selectedIndex", 0).val(); //Muestra el valor del primer elemento del select.
         }
 
@@ -154,8 +235,14 @@
 
             if (json != null) {
                 //Si la variable json tiene datos, los asigna a cada input.
-                $("#txtId").val(json.idCategoria);
+                $("#txtId").val(json.idProducto);
+                $("#txtNombre").val(json.Nombre);
                 $("#txtDescripcion").val(json.Descripcion);
+                $("#cboMarca").val(json.oMarca.idMarca);
+                $("#cboCategoria").val(json.oCategoria.idCategoria);
+                $("#txtPrecio").val(json.Precio);
+                $("#txtStock").val(json.Stock);
+                
                 $("#cboActivo").val(json.Activa == true ? 1 : 0); //Boolean: Si el dato recibido es true le asigna el valor 1, de lo contrario le asigna 0.
             }
 
@@ -210,35 +297,55 @@
         })
 
         function Guardar() {
-            let marca = {
-                idMarca: $("#txtId").val(),
+            let imagenSeleccionada = $("#fileProducto")[0].files[0];
+
+            let producto = {
+                idProducto: $("#txtId").val(),
+                Nombre: $("#txtNombre").val(),
                 Descripcion: $("#txtDescripcion").val(),
-                Activa: $("#cboActivo").val() == 1 ? true : false
+                oMarca: {
+                    idMarca: $("#cboMarca option:selected").val(),
+                    Descripcion: $("#cboMarca option:selected").text()
+                },
+                oCategoria: {
+                    idCategoria: $("#cboCategoria option:selected").val(),
+                    Descripcion: $("#cboCategoria option:selected").text()
+                },
+                precioTexto: $("#txtPrecio").val(),
+                Precio: $("#txtPrecio").val(),
+                Stock: $("#txtStock").val(),
+                Activo: $("#cboActivo").val() == 1 ? true : false
             }
 
+            console.log(producto)
+
+            let request = new FormData();
+            request.append("objeto", JSON.stringify(producto))
+            request.append("archivoImagen", imagenSeleccionada)
+
             jQuery.ajax({
-                url: '@Url.Action("GuardarMarca", "Mantenimiento")',
+                url: '@Url.Action("GuardarProducto", "Mantenimiento")',
                 type: "POST",
-                data: JSON.stringify({ obj: marca }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
+                data: request,
+                processData: false,
+                contentType: false,
                 success: function (data) {
                     $(".modal-body").LoadingOverlay("hide");
 
-                    if (marca.idMarca == 0) {
-                        // Crear marca
-                        if (data.resultado != 0) {
-                            marca.idMarca = data.resultado;
-                            dataTable.row.add(marca).draw(false);
+                    if (producto.idProducto == 0) {
+                        // Crear producto
+                        if (data.idGenerado != 0) {
+                            producto.idProducto = data.idGenerado;
+                            dataTable.row.add(producto).draw(false);
                             $("#frmModal").modal("hide");
                         } else {
                             $("#mensajeError").text(data.mensaje);
                             $("#mensajeError").show();
                         }
                     } else {
-                        // Editar marca
-                        if (data.resultado) {
-                            dataTable.row(selectedRow).data(marca).draw(false);
+                        // Editar producto
+                        if (data.operacionExitosa) {
+                            dataTable.row(selectedRow).data(producto).draw(false);
                             selectedRow = null;
                             $("#frmModal").modal("hide");
                         } else {
