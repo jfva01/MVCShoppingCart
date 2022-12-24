@@ -16,7 +16,7 @@ namespace CapaPresentacionAdmin
                         "~/Scripts/DataTables/jquery.dataTables.js",
                         "~/Scripts/DataTables/dataTables.responsive.js",
                         "~/Scripts/loadingoverlay/loadingoverlay.min.js",
-                        "~/Scripts/sweetalert.min.js",
+                        "~/Scripts/sweetalert2.all.min.js",
                         "~/Scripts/scripts.js"));
 
             //bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
@@ -35,8 +35,7 @@ namespace CapaPresentacionAdmin
                         "~/Content/DataTables/css/jquery.dataTables.css",
                         "~/Content/DataTables/css/dataTables.bootstrap5.min.css",
                         "~/Content/DataTables/css/responsive.dataTables.css",
-                        "~/Content/sweetalert.css",
-                        "~/Content/all.min.css"
+                        "~/Content/sweetalert2.min.css"
                 ));
         }
     }

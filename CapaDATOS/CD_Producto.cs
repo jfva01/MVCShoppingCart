@@ -25,7 +25,7 @@ namespace CapaDATOS
                     SB.AppendLine("SELECT PRD.idProducto, PRD.Nombre, PRD.Descripcion, MAR.idMarca, MAR.Descripcion Marca");
                     SB.AppendLine(", CAT.idCategoria, CAT.Descripcion Categoria, PRD.Precio, PRD.Stock, PRD.rutaImagen");
                     SB.AppendLine(", PRD.nombreImagen, PRD.Activo FROM PRODUCTO PRD");
-                    SB.AppendLine(" INNER JOIN MARCA MAR ON PRD.idMarca = PRD.idMarca");
+                    SB.AppendLine(" INNER JOIN MARCA MAR ON PRD.idMarca = MAR.idMarca");
                     SB.AppendLine(" INNER JOIN CATEGORIA CAT ON CAT.idCategoria = PRD.idCategoria");
 
                     SqlCommand cmd = new SqlCommand(SB.ToString(), oConexion);

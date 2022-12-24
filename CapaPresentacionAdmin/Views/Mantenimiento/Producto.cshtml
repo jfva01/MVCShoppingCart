@@ -20,7 +20,7 @@
 
         <hr />
 
-        <table id="tblDatosMarca" class="display cell-border" style="width: 100%">
+        <table id="tblDatosProductos" class="display cell-border" style="width: 100%">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -143,18 +143,23 @@
             }
         }
 
-        dataTable = $("#tblDatosMarca").DataTable({
+        dataTable = $("#tblDatosProductos").DataTable({
             responsive: true,
             ordering: false,
             "ajax": {
-                url: '@Url.Action("ListarMarcas", "Mantenimiento")',
+                url: '@Url.Action("ListarProducto", "Mantenimiento")',
                 type: "GET",
                 dataType: "json",
             },
             "columns": [
+                { "data": "Nombre" },
                 { "data": "Descripcion" },
+                { "data": "oMarca", "render": function (data) { return data.Descripcion } },
+                { "data": "oCategoria", "render": function (data) { return data.Descripcion } },
+                { "data": "Precio" },
+                { "data": "Stock" },
                 {
-                    "data": "Activa", "render": function (valor) {
+                    "data": "Activo", "render": function (valor) {
                         if (valor) {
                             return '<input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>'
                         } else {
@@ -263,7 +268,7 @@
             selectedBrand = $(this).closest("tr");
             //Obtener datos de la fila seleccionada
             let data = dataTable.row(selectedBrand).data();
-            swal({
+            swal.fire({
                 title: "Eliminar",
                 text: "Seguro desea eliminar este registro?",
                 type: "warning",

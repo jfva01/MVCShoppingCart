@@ -101,7 +101,7 @@ namespace CapaPresentacionAdmin.Controllers
         public JsonResult EliminarMarca(int idMarca)
         {
             bool respuesta = false;
-            string mensaje = string.Empty;
+            string mensaje;
 
             respuesta = new CN_Marca().EliminarMarca(idMarca, out mensaje);
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
@@ -123,7 +123,7 @@ namespace CapaPresentacionAdmin.Controllers
         [HttpPost]
         public JsonResult GuardarProducto(string objeto, HttpPostedFileBase archivoImagen)
         {
-            string mensaje = string.Empty;
+            string mensaje;
             bool operacion_exitosa = true;
             bool guardar_imagen_exito = true;
 
@@ -216,7 +216,7 @@ namespace CapaPresentacionAdmin.Controllers
         public JsonResult EliminarProducto(int idProducto)
         {
             bool respuesta = false;
-            string mensaje = string.Empty;
+            string mensaje;
 
             respuesta = new CN_Producto().EliminarProducto(idProducto, out mensaje);
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
