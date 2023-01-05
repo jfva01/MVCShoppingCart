@@ -105,9 +105,7 @@
                 <!-- Mensaje de alerta -->
                 <div class="row mt-4">
                     <div class="col-12">
-                        <div id="mensajeError" class="alert alert-danger" role="alert">
-                            A simple danger alert—check it out!
-                        </div>
+                        <div id="mensajeError" class="alert alert-danger" role="alert"></div>
                     </div>
                 </div>
             </div>
@@ -220,6 +218,36 @@
             }
         });
 
+        jQuery.validator.addMethod("precioDecimal", function (value, element) {
+            return this.optional(element) || /^\d{0,4}(\.\d{0,2})?$/i.test(value);
+        }, "El formato correcto para el precio debe ser ###.##");
+
+        $("#contenedor").validate({
+            rules: {
+                nombre: {
+                    required: true
+                },
+                descripcion: {
+                    required: true
+                },
+                precio: {
+                    required: true,
+                    precioDecimal: true
+                },
+                stock: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                nombre: " - El campo nombre es obligatorio.",
+                descripcion: " - El campo descripción es obligatorio.",
+                precio: { required: " - El campo precio es obligatorio.", precioDecimal: " - El formato correcto para el precio debe ser ###.##" },
+                stock: { required: " - El campo stock es obligatorio.", number: " - Debe ingresar solo números." }
+            },
+            errorElement: "div",
+            errorLabelContainer: ".alert-danger"
+        })
 
         function limpiarModal() {
             $("#imgProducto").removeAttr("src");
@@ -254,7 +282,7 @@
             $("#frmModal").modal("show");
         }
 
-        $("#tblDatosMarca tbody").on("click", '.btn-editar', function () {
+        $("#tblDatosProductos tbody").on("click", '.btn-editar', function () {
             //Obtener la fila seleccionada
             selectedRow = $(this).closest("tr");
             //Obtener datos de la fila seleccionada
@@ -263,7 +291,7 @@
             openModal(data);
         })
 
-        $("#tblDatosMarca tbody").on("click", '.btn-eliminar', function () {
+        $("#tblDatosProductos tbody").on("click", '.btn-eliminar', function () {
             //Obtener la fila seleccionada
             selectedBrand = $(this).closest("tr");
             //Obtener datos de la fila seleccionada
@@ -281,7 +309,7 @@
             },
                 function () {
                 jQuery.ajax({
-                    url: '@Url.Action("EliminarMarca", "Mantenimiento")',
+                    url: '@Url.Action("EliminarProducto", "Mantenimiento")',
                     type: "POST",
                     data: JSON.stringify({ idMarca: data.idMarca }),
                     dataType: "json",
@@ -300,8 +328,13 @@
                 });
             });
         })
-
+        
         function Guardar() {
+
+            if (!$("#contenedor").valid()){
+                return;
+            };
+
             let imagenSeleccionada = $("#fileProducto")[0].files[0];
 
             let producto = {
