@@ -275,8 +275,32 @@
                 $("#cboCategoria").val(json.oCategoria.idCategoria);
                 $("#txtPrecio").val(json.Precio);
                 $("#txtStock").val(json.Stock);
-                
-                $("#cboActivo").val(json.Activa == true ? 1 : 0); //Boolean: Si el dato recibido es true le asigna el valor 1, de lo contrario le asigna 0.
+                $("#cboActivo").val(json.Activo == true ? 1 : 0); //Boolean: Si el dato recibido es true le asigna el valor 1, de lo contrario le asigna 0.
+
+                jQuery.ajax({
+                    url: '@Url.Action("ImagenProducto", "Mantenimiento")',
+                    type: "POST",
+                    data: JSON.stringify({ Id: json.idProducto }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $("#imgProducto").LoadingOverlay("hide");
+                        console.log(data);
+                        if (data.conversion) {
+                            $("#imgProducto").attr({ "src": "data:image/" + data.extension + ";base64," + data.textoBase64 });
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
+                        $("#imgProducto").LoadingOverlay("hide");
+
+                        $("#mansajeError").show();
+                        $("#mansajeError").text("Error al mostrar la imagen");
+                    },
+                    beforeSend: function () {
+                        $("#imgProducto").LoadingOverlay("show");
+                    },
+                });
             }
 
             $("#frmModal").modal("show");
@@ -289,6 +313,7 @@
             let data = dataTable.row(selectedRow).data();
             //Abrir modal
             openModal(data);
+            console.log(data);
         })
 
         $("#tblDatosProductos tbody").on("click", '.btn-eliminar', function () {
@@ -332,7 +357,7 @@
         function Guardar() {
 
             if (!$("#contenedor").valid()){
-                return;
+                return
             };
 
             let imagenSeleccionada = $("#fileProducto")[0].files[0];

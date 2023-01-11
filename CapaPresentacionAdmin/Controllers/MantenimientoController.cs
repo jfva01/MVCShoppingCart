@@ -182,7 +182,7 @@ namespace CapaPresentacionAdmin.Controllers
                     {
                         oProducto.rutaImagen = rutaImagenes;
                         oProducto.nombreImagen = nombre_imagen;
-                        bool resp = new CN_Producto().GuardarDatosImagen(oProducto, out mensaje);
+                        operacion_exitosa = new CN_Producto().GuardarDatosImagen(oProducto, out mensaje);
                     }
                     else
                     {

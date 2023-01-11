@@ -153,7 +153,7 @@ namespace CapaDATOS
                 using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_EditarProducto", oConexion);
-                    cmd.Parameters.AddWithValue("idProducto", obj.Nombre);
+                    cmd.Parameters.AddWithValue("idProducto", obj.idProducto);
                     cmd.Parameters.AddWithValue("Nombre", obj.Nombre);
                     cmd.Parameters.AddWithValue("Descripcion", obj.Descripcion);
                     cmd.Parameters.AddWithValue("idMarca", obj.oMarca.idMarca);
