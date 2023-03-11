@@ -54,7 +54,7 @@
                 <form class="row" id="contenedor">
                     <div class="col-sm-3">
                         <div class="mb-2">
-                            <img id="imgProducto" width="200" height="197" class="img-thumbnail mx-auto d-block img-fluid" />
+                            <img id="imgProducto" style="aspect-ratio:4/3; object-fit:contain; width:100%" class="img-thumbnail mx-auto d-block img-fluid" />
                         </div>
                         <div class="mb-2">
                             <input id="fileProducto" class="form-control" type="file" accept="image/png, image/jpg, image/jpeg" onchange="mostrarImagen(this)" />
@@ -318,11 +318,12 @@
 
         $("#tblDatosProductos tbody").on("click", '.btn-eliminar', function () {
             //Obtener la fila seleccionada
-            selectedBrand = $(this).closest("tr");
+            selectedProduct = $(this).closest("tr");
             //Obtener datos de la fila seleccionada
-            let data = dataTable.row(selectedBrand).data();
+            let data = dataTable.row(selectedProduct).data();
             swal.fire({
                 title: "Eliminar",
+                icon: "warning",
                 text: "Seguro desea eliminar este registro?",
                 type: "warning",
                 showCancelButton: true,
@@ -336,15 +337,15 @@
                 jQuery.ajax({
                     url: '@Url.Action("EliminarProducto", "Mantenimiento")',
                     type: "POST",
-                    data: JSON.stringify({ idMarca: data.idMarca }),
+                    data: JSON.stringify({ idProducto: data.idProducto }),
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
                         if (data.resultado) {
-                            dataTable.row(selectedBrand).remove().draw();
-                            swal("Registro eliminado correctamente", data.mensaje, "Confirmación")
+                            dataTable.row(selectedProduct).remove().draw();
+                            swal("Registro eliminado correctamente.", data.mensaje, "Confirmación")
                         } else {
-                            swal("No se pudo eliminar el registro", data.mensaje, "Error")
+                            swal("No se pudo eliminar el registro.", data.mensaje, "Error")
                         }
                     },
                     error: function (error) {

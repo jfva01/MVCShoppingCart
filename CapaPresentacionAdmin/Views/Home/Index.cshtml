@@ -1,31 +1,138 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Dashboard";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<h1 class="mt-4">Dashboard</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Dashboard</li>
+</ol>
+@*Tarjetas encabezado*@
+<div class="row">
+    @*Cantidad de clientes*@
+    <div class="col-xl-3 col-md-6">
+        <div class="card shadow bg-success text-white mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h6>Cantidad de clientes</h6>
+                        <h6 id="cantidadClientes">0</h6>
+                    </div>
+                    <div class="col-sm-3">
+                        <i class="fas fa-user fa-4x" style="opacity:0.4; transform:scale(1.6)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Cantidad de ventas*@
+    <div class="col-xl-3 col-md-6">
+        <div class="card shadow bg-warning text-white mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h6>Cantidad de ventas</h6>
+                        <h6 id="cantidadVentas">0</h6>
+                    </div>
+                    <div class="col-sm-3">
+                        <i class="fas fa-shopping-bag fa-4x" style="opacity:0.4; transform:scale(1.6)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*Cantidad de productos*@
+    <div class="col-xl-3 col-md-6">
+        <div class="card shadow bg-secondary text-white mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <h6>Cantidad de productos</h6>
+                        <h6 id="cantidadProductos">0</h6>
+                    </div>
+                    <div class="col-sm-3">
+                        <i class="fas fa-box fa-4x" style="opacity:0.4; transform:scale(1.6)"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-tags me-1"></i>
+        Historial de ventas
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="card-body">
+        <form action="/" method="post">
+            <div class="row align-items-end">
+                <div class="col-sm-2">
+                    <div class="mb-2">
+                        <label for="" class="form-label">Fecha de inicio</label>
+                        <input type="text" id="txtfechainicio" name="fechainicio" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-2">
+                        <label for="" class="form-label">Fecha fin</label>
+                        <input type="text" id="txtfechafin" name="fechafin" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="mb-2">
+                        <label for="" class="form-label">Id Transacción</label>
+                        <input type="text" id="txtidtransaccion" name="idtransaccion" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="d-grid mb-2">
+                        <button class="btn btn-primary" id="btnBuscar" type="button"><i class="fas fa-search"></i> Buscar</button>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="d-grid mb-2">
+                        <button class="btn btn-success" type="submit"><i class="fas fa-file-excel"></i> Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="tabla" class="display cell-border" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Fecha de venta</th>
+                            <th>Cliente</th>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Id Transacción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        jQuery.ajax({
+            url: '@Url.Action("VistaDashboard", "Home")',
+            type: "GET",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                let objeto = data.resultado;
+                $("#cantidadClientes").text(objeto.TotalClientes)
+                $("#cantidadVentas").text(objeto.TotalVentas)
+                $("#cantidadProductos").text(objeto.TotalProductos)
+            }
+        });
+    </script>    
+}

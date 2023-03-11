@@ -29,10 +29,12 @@ namespace CapaPresentacionAdmin
             //            "~/Scripts/modernizr-*"));
 
             bundles.Add(new Bundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.bundle.js"));
+                      "~/Scripts/bootstrap.bundle.min.js"));
+                    
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                         "~/Content/site.css",
+                        "~/Content/bootstrap.min.css",
                         "~/Content/DataTables/css/jquery.dataTables.css",
                         "~/Content/DataTables/css/dataTables.bootstrap5.min.css",
                         "~/Content/DataTables/css/responsive.dataTables.css",

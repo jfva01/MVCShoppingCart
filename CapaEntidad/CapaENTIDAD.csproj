@@ -47,6 +47,7 @@
     <Compile Include="Categoria.cs" />
     <Compile Include="Ciudad.cs" />
     <Compile Include="Cliente.cs" />
+    <Compile Include="Dashboard.cs" />
     <Compile Include="Estado.cs" />
     <Compile Include="Marca.cs" />
     <Compile Include="Producto.cs" />
