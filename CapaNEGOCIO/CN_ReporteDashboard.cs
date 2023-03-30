@@ -12,6 +12,11 @@ namespace CapaNEGOCIO
     {
         private CD_ReporteDashboard objCapaDATOS = new CD_ReporteDashboard();
 
+        public List<Reporte> Ventas(string fechaInicio, string fechaFin, string idTransaccion)
+        {
+            return objCapaDATOS.Ventas(fechaInicio, fechaFin, idTransaccion);
+        }
+
         public Dashboard VerDashboard()
         {
             return objCapaDATOS.VerDashboard();
