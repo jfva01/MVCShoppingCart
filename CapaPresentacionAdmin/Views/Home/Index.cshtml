@@ -99,7 +99,7 @@
         <hr />
         <div class="row">
             <div class="col-sm-12">
-                <table id="tabla" class="display cell-border" style="width:100%">
+                <table id="tablaVentas" class="display cell-border" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id de Venta</th>
@@ -108,6 +108,7 @@
                             <th>Producto</th>
                             <th>Precio</th>
                             <th>Cantidad</th>
+                            <th>Impuesto</th>
                             <th>Total</th>
                             <th>Id Transacción</th>
                         </tr>
@@ -123,20 +124,66 @@
 
 @section scripts{
     <script>
-        $("#txtfechainicio").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date());
-        $("#txtfechafin").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date());
+        let dataTable;
 
-        jQuery.ajax({
-            url: '@Url.Action("VistaDashboard", "Home")',
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                let objeto = data.resultado;
-                $("#cantidadClientes").text(objeto.TotalClientes)
-                $("#cantidadVentas").text(objeto.TotalVentas)
-                $("#cantidadProductos").text(objeto.TotalProductos)
-            }
+        $(document).ready(function () {
+
+            $("#txtfechainicio").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date());
+            $("#txtfechafin").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date());
+
+            jQuery.ajax({
+                url: '@Url.Action("VistaDashboard", "Home")',
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    let objeto = data.resultado;
+                    $("#cantidadClientes").text(objeto.TotalClientes)
+                    $("#cantidadVentas").text(objeto.TotalVentas)
+                    $("#cantidadProductos").text(objeto.TotalProductos)
+                }
+            });
+
+            //Llenamos la tabla de Resumen de Ventas
+            let url = '@Url.Action("ListaReporte", "Home")' +
+                "?fechaInicio=" + $("#txtfechainicio").val() +
+                "&fechaFin=" + $("#txtfechafin").val() +
+                "&idTransaccion=" + $("#txtidtransaccion").val()
+
+            dataTable = $("#tablaVentas").DataTable({
+                responsive: true,
+                ordering: false,
+                "ajax": {
+                    url: url,
+                    type: "GET",
+                    dataType: "json",
+                },
+                "columns": [
+                    { "data": "idVenta" },
+                    { "data": "fechaVenta" },
+                    { "data": "cliente" },
+                    { "data": "producto" },
+                    { "data": "precio" },
+                    { "data": "cantidad" },
+                    { "data": "impuesto" },
+                    { "data": "total" },
+                    { "data": "idTransaccion" }
+                ],
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/es_es.json"
+                }
+            });
         });
+
+        //Botón Buscar
+        $("#btnBuscar").on("click", function () {
+            let _urlBusqueda = '@Url.Action("ListaReporte", "Home")' +
+                "?fechaInicio=" + $("#txtfechainicio").val() +
+                "&fechaFin=" + $("#txtfechafin").val() +
+                "&idTransaccion=" + $("#txtidtransaccion").val()
+
+            dataTable.ajax.url(_urlBusqueda).load();
+        })
+
     </script>    
 }
