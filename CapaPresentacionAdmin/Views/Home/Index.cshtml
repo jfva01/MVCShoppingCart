@@ -64,7 +64,7 @@
         Historial de ventas
     </div>
     <div class="card-body">
-        <form action="/" method="post">
+        <form action="@Url.Action("ExportarVentas","Home")" method="post">
             <div class="row align-items-end">
                 <div class="col-sm-2">
                     <div class="mb-2">
@@ -102,7 +102,6 @@
                 <table id="tablaVentas" class="display cell-border" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Id de Venta</th>
                             <th>Fecha de venta</th>
                             <th>Cliente</th>
                             <th>Producto</th>
@@ -124,6 +123,7 @@
 
 @section scripts{
     <script>
+
         let dataTable;
 
         $(document).ready(function () {
@@ -153,13 +153,13 @@
             dataTable = $("#tablaVentas").DataTable({
                 responsive: true,
                 ordering: false,
+                autoWidth: true,
                 "ajax": {
                     url: url,
                     type: "GET",
                     dataType: "json",
                 },
                 "columns": [
-                    { "data": "idVenta" },
                     { "data": "fechaVenta" },
                     { "data": "cliente" },
                     { "data": "producto" },
@@ -175,7 +175,7 @@
             });
         });
 
-        //Botón Buscar
+        //Botón Buscar ventas según filtro
         $("#btnBuscar").on("click", function () {
             let _urlBusqueda = '@Url.Action("ListaReporte", "Home")' +
                 "?fechaInicio=" + $("#txtfechainicio").val() +

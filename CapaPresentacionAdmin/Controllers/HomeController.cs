@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CapaEntidad;
 using CapaNEGOCIO;
+using ClosedXML.Excel;
 
 namespace CapaPresentacionAdmin.Controllers
 {
@@ -72,6 +75,50 @@ namespace CapaPresentacionAdmin.Controllers
         {
             Dashboard objeto = new CN_ReporteDashboard().VerDashboard();
             return Json(new { resultado = objeto}, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public FileResult ExportarVentas(string fechaInicio, string fechaFin, string idTransaccion)
+        {
+            List<Reporte> oLista = new List<Reporte>();
+            oLista = new CN_ReporteDashboard().Ventas(fechaInicio, fechaFin, idTransaccion);
+            DataTable dt = new DataTable();
+
+            dt.Locale = new System.Globalization.CultureInfo("es-CL");
+            dt.Columns.Add("Fecha Venta",typeof(string));
+            dt.Columns.Add("Cliente", typeof(string));
+            dt.Columns.Add("Producto", typeof(string));
+            dt.Columns.Add("Cantidad", typeof(int));
+            dt.Columns.Add("Precio", typeof(decimal));
+            dt.Columns.Add("Impuesto", typeof(decimal));
+            dt.Columns.Add("Total", typeof(decimal));
+            dt.Columns.Add("IdTransaccion", typeof(string));
+
+            foreach (Reporte rp in oLista)
+            {
+                dt.Rows.Add(new object[] { 
+                    rp.fechaVenta,
+                    rp.cliente,
+                    rp.producto,
+                    rp.cantidad,
+                    rp.precio,
+                    rp.impuesto,
+                    rp.total,
+                    rp.idTransaccion
+                });
+            }
+
+            dt.TableName = "Datos";
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using(MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vmd.openxmlformats-officedocument.spreadsheet.sheet","ReporteVenta_" + DateTime.Now.ToShortDateString() + ".xlsx");
+                }
+            }
         }
     }
 }
