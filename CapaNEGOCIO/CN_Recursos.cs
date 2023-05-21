@@ -60,10 +60,13 @@ namespace CapaNEGOCIO
 
                 var smtp = new SmtpClient()
                 {
-                    Credentials = new NetworkCredential("nakama.view@gmail.com", "fqqwppjjclarwodl"),
+                    //Las credenciales son el correo del remitente y la clave generada en la configuración 
+                    //de Contraseña de aplicaciones de Google en este caso 
+                    Credentials = new NetworkCredential("nakama.view@gmail.com", "blzsishcukjjlicv"),
                     Host = "smtp.gmail.com",
                     Port = 587,
                     EnableSsl = true
+                    
                 };
 
                 smtp.Send(mail);
@@ -71,7 +74,7 @@ namespace CapaNEGOCIO
 
             } catch (Exception ex)
             {
-                resultado = true;
+                resultado = false;
                 mensaje = ex.Message;
             }
 

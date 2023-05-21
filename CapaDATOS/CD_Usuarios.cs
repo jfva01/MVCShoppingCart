@@ -148,5 +148,55 @@ namespace CapaDATOS
             }
             return resultado;
         }
+
+        public bool CambiarClaveUsuario(int idUsuario, string nuevaClave, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
+                {
+                    SqlCommand cmd = new SqlCommand("UPDATE usuario SET Clave = @nuevaClave, Restablecer = 0 where idUsuario = @idUsuario", oConexion);
+                    cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@nuevaClave", nuevaClave);
+                    cmd.CommandType = CommandType.Text;
+                    oConexion.Open();
+                    resultado = cmd.ExecuteNonQuery() > 0 ? true : false; // Si el total de filas afectadas es mayor a 0 asigna valor true
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+            return resultado;
+        }
+
+        public bool RestablecerClaveUsuario(int idUsuario, string Clave, out string Mensaje)
+        {
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oConexion = new SqlConnection(Conexion.Conn))
+                {
+                    SqlCommand cmd = new SqlCommand("UPDATE usuario SET Clave = @Clave, Restablecer = 1 where idUsuario = @idUsuario", oConexion);
+                    cmd.Parameters.AddWithValue("@IdUsuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@Clave", Clave);
+                    cmd.CommandType = CommandType.Text;
+                    oConexion.Open();
+                    resultado = cmd.ExecuteNonQuery() > 0 ? true : false; // Si el total de filas afectadas es mayor a 0 asigna valor true
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+            return resultado;
+        }
     }
 }

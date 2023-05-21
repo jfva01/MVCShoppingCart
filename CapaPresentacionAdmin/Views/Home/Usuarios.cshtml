@@ -171,10 +171,12 @@
             selectedUser = $(this).closest("tr");
             //Obtener datos de la fila seleccionada
             let data = dataTable.row(selectedUser).data();
-            swal({
+            console.log(data);
+            swal.fire({
                 title: "Eliminar",
                 text: "Seguro desea eliminar este registro?",
                 type: "warning",
+                icon: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-dark",
                 cancelButtonClass: "btn-danger",
