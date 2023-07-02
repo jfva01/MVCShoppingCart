@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+    <title>Restablecer Clave</title>
     <link href="~/Content/Site.css" rel="stylesheet" />
 </head>
 <body class="bg-dark">
@@ -19,30 +19,27 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header"><h3 class="text-center font-weight-light my-3">Login</h3></div>
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">¿Olvidaste tu Contraseña?</h3></div>
                                 <div class="card-body">
-                                    <form action="@Url.Action("Index","Acceso")" method="post">
+                                    <div class="small mb-3 p-2 text-muted text-center">Lo sabemos, las cosas pasan. Pero no hay problema, ingresa aquí tu correo y te enviaremos un link para restablecer tu contraseña!</div>
+                                    <form action="@Url.Action("RestablecerClave","Acceso")" method="post">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" name="Correo" type="email" placeholder="Email" />
-                                            <label for="inputEmail">Email</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" name="Clave" type="password" placeholder="Contraseña" />
-                                            <label for="inputPassword">Contraseña</label>
+                                            <input class="form-control" name="correo" type="email" placeholder="Ingresar Email" autocomplete="off" />
+                                            <label for="inputEmail">Ingresar Email</label>
                                         </div>
                                         @{
                                             if (ViewBag.Error != null)
                                             {
                                                 <div class="form-floating mb-3">
                                                     <div class="alert alert-danger" role="alert">
-                                                        @ViewBag.Error  
+                                                        @ViewBag.Error
                                                     </div>
                                                 </div>
                                             }
                                         }
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="@Url.Action("RestablecerClave","Acceso")">¿Has olvidado tu contraseña?</a>
-                                            <button type="submit" class="btn btn-dark">Iniciar sesión</button>
+                                            <a class="small" href="@Url.Action("Index","Acceso")">Regresar al login</a>
+                                            <button class="btn btn-primary" type="submit" href="login.html">Enviar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -59,7 +56,7 @@
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; VM Sistema de Ventas</div>
+                        <div class="text-muted">Copyright &copy; Your Website 2022</div>
                         <div>
                             <a href="#">Privacy Policy</a>
                             &middot;

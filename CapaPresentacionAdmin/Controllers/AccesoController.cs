@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CapaEntidad;
 using CapaNEGOCIO;
+using System.Web.Security;
 
 namespace CapaPresentacionAdmin.Controllers
 {
@@ -49,6 +50,8 @@ namespace CapaPresentacionAdmin.Controllers
                     TempData["idUsuario"] = oUsuario.idUsuario;
                     return RedirectToAction("CambiarClave");
                 }
+                // Le indicamos al sistema que va a usar la autenticación por formularios
+                FormsAuthentication.SetAuthCookie(oUsuario.Correo, false);
 
                 ViewBag.Error = null;
                 return RedirectToAction("Index", "Home");
@@ -61,15 +64,16 @@ namespace CapaPresentacionAdmin.Controllers
             Usuario oUsuario = new Usuario();
 
             oUsuario = new CN_Usuarios().Listar().Where(u => u.idUsuario == int.Parse(idUsuario)).FirstOrDefault();
-
+            // Encriptamos la clave actual ingresada para comprarla con la que tiene el usuario
             if (oUsuario.Clave != CN_Recursos.ConvertToSHA256(claveActual))
             {
                 TempData["idUsuario"] = idUsuario;
+                // ViewData Nos permite almacenar valores simples, como cadenas de texto
                 ViewData["claveActual"] = string.Empty;
                 ViewBag.Error = "La contraseña actual no es correcta.";
                 return View();
             }
-            else if(nuevaClave != confirmarClave)
+            else if(nuevaClave != confirmarClave) // Verificamos que la nueva clave y la confirmación coincidan
             {
                 TempData["idUsuario"] = idUsuario;
                 ViewData["claveActual"] = claveActual;
@@ -94,5 +98,43 @@ namespace CapaPresentacionAdmin.Controllers
                 return View();
             }
         }
+
+        [HttpPost]
+        public ActionResult RestablecerClave(string correo)
+        {
+            Usuario oUsuario = new Usuario();
+
+            oUsuario = new CN_Usuarios().Listar().Where(item => item.Correo == correo).FirstOrDefault();
+
+            if (oUsuario == null)
+            {
+                ViewBag.Error = "No se encontró un usuario relacionado a ese correo.";
+                return View();
+            }
+            else
+            {
+                string Mensaje = string.Empty;
+                bool Respuesta = new CN_Usuarios().RestablecerClaveUsuario(oUsuario.idUsuario, correo, out Mensaje);
+
+                if (Respuesta)
+                {
+                    ViewBag.Error = null;
+                    return RedirectToAction("Index", "Acceso");
+                }
+                else
+                {
+                    ViewBag.Error = Mensaje;
+                    return View();
+                }
+            }
+        }
+
+        public ActionResult CerrarSesion()
+        {
+            // Le indicamos al sistema que se cerró la sesión
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Acceso");
+        }
+
     }
 }
