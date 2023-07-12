@@ -68,7 +68,7 @@ namespace CapaPresentacionTienda.Controllers
 
             oCliente = new CN_Cliente().Listar().Where(item => item.Correo == Correo && item.Clave == CN_Recursos.ConvertToSHA256(Clave)).FirstOrDefault();
 
-            if(oCliente == null)
+            if (oCliente == null)
             {
                 ViewBag.Error = "Correo o Contraseña no son correctos.";
                 return View();
@@ -110,7 +110,7 @@ namespace CapaPresentacionTienda.Controllers
                 if (Respuesta)
                 {
                     ViewBag.Error = null;
-                    return RedirectToAction("Index", "Acceso");
+                    return RedirectToAction("Login", "Acceso");
                 }
                 else
                 {
@@ -120,7 +120,7 @@ namespace CapaPresentacionTienda.Controllers
             }
         }
         [HttpPost]
-        public ActionResult CambiarClaveCliente(string idCliente, string claveActual, string nuevaClave, string confirmarClave)
+        public ActionResult CambiarClave(string idCliente, string claveActual, string nuevaClave, string confirmarClave)
         {
             Cliente oCliente = new Cliente();
 
@@ -146,11 +146,11 @@ namespace CapaPresentacionTienda.Controllers
             nuevaClave = CN_Recursos.ConvertToSHA256(nuevaClave);
             string Mensaje = string.Empty;
 
-            bool respuesta = new CN_Usuarios().CambiarClaveUsuario(int.Parse(idCliente), nuevaClave, out Mensaje);
+            bool respuesta = new CN_Cliente().CambiarClaveCliente(int.Parse(idCliente), nuevaClave, out Mensaje);
 
             if (respuesta)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Login");
             }
             else
             {
