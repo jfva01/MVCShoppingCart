@@ -149,9 +149,7 @@ namespace CapaPresentacionTienda.Controllers
             bool respuesta = new CN_Cliente().CambiarClaveCliente(int.Parse(idCliente), nuevaClave, out Mensaje);
 
             if (respuesta)
-            {
                 return RedirectToAction("Login");
-            }
             else
             {
                 TempData["idCliente"] = idCliente;
@@ -163,6 +161,7 @@ namespace CapaPresentacionTienda.Controllers
         public ActionResult CerrarSesion()
         {
             // Le indicamos al sistema que se cerró la sesión
+            Session["Cliente"] = null;
             FormsAuthentication.SignOut();
             return RedirectToAction("Login", "Acceso");
         }
